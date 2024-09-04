@@ -131,5 +131,124 @@ router.get('/:productName/variants', async (req, res) => {
   }
 });
 
+// PATCH route to apply a discount to a product
+router.patch('/:productId/discount', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { discountPercentage } = req.body;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    const discountedPrice = product.productPrice - (product.productPrice * discountPercentage / 100);
+
+    product.productPrice = discountedPrice;
+    await product.save();
+
+    res.status(200).json({ message: 'Discount applied successfully', product });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// PUT route to edit a product
+router.put('/:productId/edit', upload.array('images', 4), async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const {
+      productName,
+      productCategory,
+      productCode,
+      smallDescription,
+      detailedDescription,
+      productSize,
+      productWoodType,
+      finishType,
+      productPrice
+    } = req.body;
+
+    const images = req.files.map(file => file.path);
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        productName,
+        productCategory,
+        productCode,
+        smallDescription,
+        detailedDescription,
+        productSize,
+        productWoodType,
+        finishType,
+        productPrice,
+        images
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({ message: 'Product updated successfully', updatedProduct });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// PATCH route to soft delete a product (remove product)
+router.patch('/:productId/remove', async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findByIdAndUpdate(productId, { isRemoved: true }, { new: true });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({ message: 'Product removed successfully', product });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// PATCH route to restore a removed product
+router.patch('/:productId/restore', async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findByIdAndUpdate(productId, { isRemoved: false }, { new: true });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({ message: 'Product restored successfully', product });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// DELETE route to permanently delete a product
+router.delete('/:productId/delete', async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({ message: 'Product permanently deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
 
 module.exports= router;

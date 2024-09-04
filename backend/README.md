@@ -26,9 +26,6 @@ This project provides a basic API for user authentication and product management
 - **Delete coupon codes**: Implement an endpoint to remove a specific coupon code from the system.
 
 
-
-
-
 # User API Endpoints 
 
 ## User Endpoints

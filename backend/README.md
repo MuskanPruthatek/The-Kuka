@@ -20,7 +20,7 @@ This project provides a basic API for user authentication and product management
 - **Retrieve Product reviews:** Retrieve all reviews associated with a product.
 - **Add Item to Cart**: Add products to a user's cart with specific variants and quantities.
 - **Retrieve Cart Items**: Fetch the cart items for a specific user, including product details and variants.
-- **Create new coupon codes**: Implement an endpoint to add new coupon codes with details like discount percentage, expiry date, and validity status.
+- **Create new coupon codes**: Add new coupon codes with details like discount percentage, expiry date, and validity status.
 - **Retrieve all coupon codes or a specific coupon by code**: Implement an endpoint to fetch all coupon codes.
 - **Update existing coupon codes (e.g., mark as invalid, change expiry date)**: Implement an endpoint to update coupon code details.
 - **Delete coupon codes**: Implement an endpoint to remove a specific coupon code from the system.

@@ -42,7 +42,6 @@ This project provides a basic API for user authentication and product management
     "password": "string"
   }
 
-
 ### Sign In
 
  **URL:** `http://localhost:6000/api/user/signin`

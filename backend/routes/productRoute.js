@@ -200,7 +200,7 @@ router.put('/:productId/edit', upload.array('images', 4), async (req, res) => {
 });
 
 // PATCH route to soft delete a product (remove product)
-router.patch('/:productId/remove', async (req, res) => {
+router.delete('/:productId/remove', async (req, res) => {
   try {
     const { productId } = req.params;
 
@@ -217,7 +217,7 @@ router.patch('/:productId/remove', async (req, res) => {
 });
 
 // PATCH route to restore a removed product
-router.patch('/:productId/restore', async (req, res) => {
+router.put('/:productId/restore', async (req, res) => {
   try {
     const { productId } = req.params;
 
@@ -246,6 +246,43 @@ router.delete('/:productId/delete', async (req, res) => {
 
     res.status(200).json({ message: 'Product permanently deleted' });
   } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// GET route to retrieve all removed (soft-deleted) products
+router.get('/removed', async (req, res) => {
+  try {
+    const removedProducts = await Product.find({ isRemoved: true });
+
+    if (removedProducts.length === 0) {
+      return res.status(404).json({ message: 'No removed products found' });
+    }
+
+    res.status(200).json({ message: 'Removed products retrieved successfully', products: removedProducts });
+  } catch (error) {
+    console.log(error);
+    
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+
+// GET route to retrieve a single product by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+    
+    const product = await Product.findById(productId);
+  
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    
+    res.status(200).json(product);
+  } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ message: 'Server error', error });
   }
 });

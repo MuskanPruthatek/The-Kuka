@@ -44,8 +44,8 @@ const productSchema = new mongoose.Schema({
     required: true 
   },
   detailedDescription: {
-     type: String, 
-     required: true 
+    type: String, 
+    required: true 
   },
   productSize: { 
     type: String, 
@@ -62,6 +62,12 @@ const productSchema = new mongoose.Schema({
   productPrice: { 
     type: Number, 
     required: true 
+  },
+  productDiscount: {
+    type: Number, // Representing percentage discount
+    min: 0,
+    max: 100,
+    default: 0 // Default to no discount
   },
   images: [{ type: String, required: true }],
   variants: [variantSchema],

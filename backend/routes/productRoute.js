@@ -35,7 +35,8 @@ const storage = multer.diskStorage({
         productSize,
         productWoodType,
         finishType,
-        productPrice
+        productPrice,
+        productDiscount
       } = req.body;
   
       const images = req.files.map(file => file.path);
@@ -50,6 +51,7 @@ const storage = multer.diskStorage({
         productWoodType,
         finishType,
         productPrice,
+        productDiscount: productDiscount || 0, // Set default if not provided
         images,
       });
   
@@ -167,7 +169,8 @@ router.put('/:productId/edit', upload.array('images', 4), async (req, res) => {
       productSize,
       productWoodType,
       finishType,
-      productPrice
+      productPrice,
+      productDiscount
     } = req.body;
 
     const images = req.files.map(file => file.path);
@@ -184,6 +187,7 @@ router.put('/:productId/edit', upload.array('images', 4), async (req, res) => {
         productWoodType,
         finishType,
         productPrice,
+        productDiscount,
         images
       },
       { new: true }

@@ -3,14 +3,13 @@ const Review = require('../models/Review');
 const Product = require('../models/Product');
 const multer = require('multer');
 const router = express.Router();
-const path= require('path');
-const fs= require('fs');
+const path = require('path');
+const fs = require('fs');
 
 const reviewUploadsDir = path.join(__dirname, '../uploads/reviews');
 if (!fs.existsSync(reviewUploadsDir)) {
   fs.mkdirSync(reviewUploadsDir, { recursive: true });
 }
-
 
 // Multer setup for review image uploads
 const reviewStorage = multer.diskStorage({
@@ -24,13 +23,13 @@ const reviewStorage = multer.diskStorage({
 
 const uploadReviewImages = multer({ storage: reviewStorage });
 
-// POST route to add a review to a product
-router.post('/:productId/review', uploadReviewImages.array('images', 4), async (req, res) => {
+// POST route to add a review to a product by product name
+router.post('/:productName/review', uploadReviewImages.array('images', 4), async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { productName } = req.params; 
     const { stars, reviewDescription } = req.body;
 
-    const product = await Product.findById(productId);
+    const product = await Product.findOne({ productName }); 
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -39,10 +38,10 @@ router.post('/:productId/review', uploadReviewImages.array('images', 4), async (
     const images = req.files.map(file => file.path);
 
     const review = new Review({
-      product: productId,
+      product: product._id, // Use the product ID for the review
       stars,
       reviewDescription,
-      images
+      images,
     });
 
     await review.save();
@@ -53,12 +52,18 @@ router.post('/:productId/review', uploadReviewImages.array('images', 4), async (
   }
 });
 
-// GET route to retrieve all reviews for a product
-router.get('/:productId/reviews', async (req, res) => {
+// GET route to retrieve all reviews for a product by product name
+router.get('/:productName/reviews', async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { productName } = req.params; 
 
-    const reviews = await Review.find({ product: productId }).populate('product', 'productName');
+    const product = await Product.findOne({ productName }); 
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    const reviews = await Review.find({ product: product._id }).populate('product', 'productName'); 
 
     if (!reviews.length) {
       return res.status(404).json({ message: 'No reviews found for this product' });

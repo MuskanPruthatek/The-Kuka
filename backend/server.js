@@ -1,4 +1,5 @@
 const express= require('express');
+const cors = require('cors');
 const app= express();
 const mongoose= require('mongoose');
 const bodyParser = require('body-parser');
@@ -10,19 +11,26 @@ const reviewRoute= require('./routes/reviewRoutes');
 const cartRoute= require('./routes/cartRoute');
 const couponRoutes = require('./routes/couponRoute');
 
+
 // middleware
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: 'http://localhost:5173', // Update to your frontend's origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
+}));
 
 
 const Port= process.env.PORT || 8000
 const MongoURL= process.env.MONGO_URI
+console.log(MongoURL)
 
 // MongoDB Connection
 mongoose.connect(MongoURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
   })
     .then(() => {
       console.log('MongoDB connected');

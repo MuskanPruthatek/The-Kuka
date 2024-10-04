@@ -24,21 +24,32 @@ const reviewStorage = multer.diskStorage({
 const uploadReviewImages = multer({ storage: reviewStorage });
 
 // POST route to add a review to a product by product name
-router.post('/:productName/review', uploadReviewImages.array('images', 4), async (req, res) => {
+router.post('/:productName/review', uploadReviewImages.fields([
+  { name: 'img1', maxCount: 1 },
+  { name: 'img2', maxCount: 1 },
+  { name: 'img3', maxCount: 1 },
+  { name: 'img4', maxCount: 1 },
+]), async (req, res) => {
   try {
     const { productName } = req.params; 
     const { stars, reviewDescription } = req.body;
 
-    const product = await Product.findOne({ productName }); 
+    const product = await Product.findOne({ productName });
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    const images = req.files.map(file => file.path);
+    // Extract the individual image files from req.files
+    const images = [
+      req.files.img1 ? req.files.img1[0].path : null,
+      req.files.img2 ? req.files.img2[0].path : null,
+      req.files.img3 ? req.files.img3[0].path : null,
+      req.files.img4 ? req.files.img4[0].path : null,
+    ].filter(Boolean); // Filter out any null entries
 
     const review = new Review({
-      product: product._id, // Use the product ID for the review
+      product: product._id,
       stars,
       reviewDescription,
       images,

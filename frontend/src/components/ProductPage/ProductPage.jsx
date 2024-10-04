@@ -1,11 +1,13 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import FilterSideBar from '../FilterSideBar/FilterSideBar'
 import ProductsList from '../ProductsList/ProductsList';
 import Hero from '../Hero/Hero';
 import Testimonial from '../Testimonial/Testimonial';
 import CustomiseProducts from '../CustomiseProducts/CustomiseProducts';
-import productsList from '../productList/productsList.json'
+// import productsList from '../productList/productsList.json'
 import ReviewForm from '../ReviewForm/ReviewForm';
+import axios from "axios";
+const VITE_APP_SERVER = import.meta.env.VITE_APP_SERVER;
 
 const ProductPage = ({ products }) => {
     // const productsList = [
@@ -101,6 +103,21 @@ const ProductPage = ({ products }) => {
     //     },
     // ]
 
+    const [productsList, setProductsList] = useState([])
+    useEffect(() => {
+      // Fetch data from API
+      axios
+        .get(`${VITE_APP_SERVER}/api/product`) // Replace with your API endpoint
+        .then((response) => {
+          // Assuming the response data is in response.data
+          setProductsList(response.data);
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the products!", error);
+        });
+    }, []);
+
     const [filterState, setFilterState] = useState({
         category: "",
         priceRange: [0, 3000],
@@ -115,21 +132,21 @@ const ProductPage = ({ products }) => {
 
       const filteredProducts = productsList.filter((product) => {
         const matchesCategory = filterState.category
-          ? product.product === filterState.category
+          ? product.productCategory === filterState.category
           : true;
           const matchesPriceRange =
           filterState.priceRange.length === 2
-            ? product.price >= filterState.priceRange[0] &&
-              product.price <= filterState.priceRange[1]
+            ? product.productPrice >= filterState.priceRange[0] &&
+              product.productPrice <= filterState.priceRange[1]
             : true;
         const matchesTypes = filterState.types.length
-          ? filterState.types.includes(product.finish)
+          ? filterState.types.includes(product.finishType)
           : true;
         const matchesWoods = filterState.woods.length
-          ? filterState.woods.includes(product.wood)
+          ? filterState.woods.includes(product.productWoodType)
           : true;
         const matchesSearch = filterState.searchedProduct
-          ? product.name.toLowerCase().includes(filterState.searchedProduct.toLowerCase())
+          ? product.productName.toLowerCase().includes(filterState.searchedProduct.toLowerCase())
           : true;
     
         return (

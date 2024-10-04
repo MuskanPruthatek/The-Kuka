@@ -40,6 +40,6 @@ mongoose.connect(MongoURL, {
   app.use('/api/user', userRoute);  // user route
   app.use('/api/product', productRoute);  // product route
   app.use('/api', contactRoute);   // contact route
-  app.use('/api/product', reviewRoute);  // review route
+  app.use('/api/products', reviewRoute);  // review route
   app.use('/api/cart', cartRoute);  // cart route
   app.use('/api/coupons', couponRoutes);  // coupon route

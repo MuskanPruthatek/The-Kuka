@@ -23,6 +23,35 @@ const reviewStorage = multer.diskStorage({
 
 const uploadReviewImages = multer({ storage: reviewStorage });
 
+// // POST route to add a review to a product by product name
+// router.post('/:productName/review', uploadReviewImages.array('images', 4), async (req, res) => {
+//   try {
+//     const { productName } = req.params; 
+//     const { stars, reviewDescription } = req.body;
+
+//     const product = await Product.findOne({ productName }); 
+
+//     if (!product) {
+//       return res.status(404).json({ message: 'Product not found' });
+//     }
+
+//     const images = req.files.map(file => file.path);
+
+//     const review = new Review({
+//       product: product._id, // Use the product ID for the review
+//       stars,
+//       reviewDescription,
+//       images,
+//     });
+
+//     await review.save();
+
+//     res.status(201).json({ message: 'Review added successfully', review });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Server error', error });
+//   }
+// });
+
 // POST route to add a review to a product by product name
 router.post('/:productName/review', uploadReviewImages.fields([
   { name: 'img1', maxCount: 1 },
@@ -63,7 +92,22 @@ router.post('/:productName/review', uploadReviewImages.fields([
   }
 });
 
-// GET route to retrieve all reviews for a product by product name
+// GET route to retrieve all reviews
+router.get('/reviews', async (req, res) => {
+  try {
+    const reviews = await Review.find().populate('product', 'productName');
+
+    if (!reviews.length) {
+      return res.status(404).json({ message: 'No reviews found' });
+    }
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// GET route to retrieve specific reviews for a product by product name
 router.get('/:productName/reviews', async (req, res) => {
   try {
     const { productName } = req.params; 
@@ -85,5 +129,7 @@ router.get('/:productName/reviews', async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 });
+
+
 
 module.exports = router;

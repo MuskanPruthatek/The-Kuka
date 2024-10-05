@@ -291,5 +291,29 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// PATCH route to update displayOnHomePage for a product
+router.patch('/:productId/display', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { displayOnHomePage } = req.body;
+
+    // Find the product by ID
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Update the displayOnHomePage field
+    product.displayOnHomePage = displayOnHomePage;
+
+    await product.save();
+
+    res.status(200).json({ message: 'Product display status updated successfully', product });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
 
 module.exports= router;

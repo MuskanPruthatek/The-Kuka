@@ -74,7 +74,8 @@ const productSchema = new mongoose.Schema({
   isRemoved: { 
     type: Boolean, 
     default: false 
-  }
+  },
+  displayOnHomePage: { type: Boolean, default: false } 
 }, 
 { timestamps: true });
 

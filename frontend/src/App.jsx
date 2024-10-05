@@ -16,6 +16,7 @@ import Slider from "./Admin/Slider";
 import Customers from "./Admin/Customers";
 import Reviews from "./Admin/Reviews";
 import EditProduct from "./Admin/ProductsPage/EditProduct";
+import CouponCode from "./Admin/CouponCode";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
           <Route path="/" element={<MainOutlet />}>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<ProductPage />} />
-            <Route path="/productDetails" element={<ProductDetails />} />
+            <Route path="/products/productDetails/:id" element={<ProductDetails />} />
             <Route path="/aboutus" element={<AboutUs />} />
             <Route path="/cart" element={<Cart />} />
           </Route>
@@ -37,6 +38,7 @@ function App() {
             <Route path="/admin/customers" element={<Customers />} />
             <Route path="/admin/reviews" element={<Reviews />} />
             <Route path="/admin/editproduct/:id" element={<EditProduct />} />
+            <Route path="/admin/coupons" element={<CouponCode />} />
           </Route>
         </Routes>
       </BrowserRouter>

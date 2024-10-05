@@ -1,54 +1,72 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { ChevronLeft, LayoutGrid, List, Star } from 'lucide-react';
+import axios from "axios";
+const VITE_APP_SERVER = import.meta.env.VITE_APP_SERVER;
 
 const Reviews = () => {
-    const data = [
-        {
-            date: "15/07/2024",
-            name: "Wooden Mug",
-            email: "abcd2@gmail.com",
-            img: "/assets/beerMug.png",
-            num: 9999999999,
-            total: "₹22,000",
-            customer: "Priya Mehta",
-            items: "2 Spice Boxes",
-            stars: 4.5,
-            review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis nunc a molestie dictum. Mauris venenatis, felis scelerisque aliquet lacinia, nulla"
-        },
-        {
-            date: "15/07/2024",
-            name: "Wooden Tea Mug",
-            email: "abcd2@gmail.com",
-            num: 9999999999,
-            total: "₹22,000",
-            img: "/assets/beerMug.png",
-            customer: "Priyank Mehta",
-            items: "2 Spice Boxes",
-            stars: 3.5,
-            review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis nunc a molestie dictum. Mauris venenatis, felis scelerisque aliquet lacinia, nulla"
-        },
-        {
-            date: "15/07/2024",
-            name: "Wooden  Mug",
-            email: "abcd2@gmail.com",
-            num: 9999999999,
-            total: "₹22,000",
-            img: "/assets/beerMug.png",
-            customer: "Taarak Mehta",
-            items: "2 Spice Boxes",
-            stars: 2,
-            review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis nunc a molestie dictum. Mauris venenatis, felis scelerisque aliquet lacinia, nulla"
-        },
-    ]
+    // const data = [
+    //     {
+    //         date: "15/07/2024",
+    //         name: "Wooden Mug",
+    //         email: "abcd2@gmail.com",
+    //         img: "/assets/beerMug.png",
+    //         num: 9999999999,
+    //         total: "₹22,000",
+    //         customer: "Priya Mehta",
+    //         items: "2 Spice Boxes",
+    //         stars: 4.5,
+    //         review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis nunc a molestie dictum. Mauris venenatis, felis scelerisque aliquet lacinia, nulla"
+    //     },
+    //     {
+    //         date: "15/07/2024",
+    //         name: "Wooden Tea Mug",
+    //         email: "abcd2@gmail.com",
+    //         num: 9999999999,
+    //         total: "₹22,000",
+    //         img: "/assets/beerMug.png",
+    //         customer: "Priyank Mehta",
+    //         items: "2 Spice Boxes",
+    //         stars: 3.5,
+    //         review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis nunc a molestie dictum. Mauris venenatis, felis scelerisque aliquet lacinia, nulla"
+    //     },
+    //     {
+    //         date: "15/07/2024",
+    //         name: "Wooden  Mug",
+    //         email: "abcd2@gmail.com",
+    //         num: 9999999999,
+    //         total: "₹22,000",
+    //         img: "/assets/beerMug.png",
+    //         customer: "Taarak Mehta",
+    //         items: "2 Spice Boxes",
+    //         stars: 2,
+    //         review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis nunc a molestie dictum. Mauris venenatis, felis scelerisque aliquet lacinia, nulla"
+    //     },
+    // ]
+
+    const [reviews, setReviews] = useState([])
+
+    useEffect(() => {
+        // Fetch data from API
+        axios
+          .get(`${VITE_APP_SERVER}/api/products/reviews`) // Replace with your API endpoint
+          .then((response) => {
+            setReviews(response.data);
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error("There was an error fetching the products!", error);
+          });
+      }, []);
+
 
     const [search, setSearch] = useState("");
 
-    const filteredItems = data.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase()) || 
-        item.email.toString().toLowerCase().includes(search.toLowerCase()) ||
-        item.date.toString().toLowerCase().includes(search.toLowerCase())
-    );
+    // const filteredItems = data.filter((item) =>
+    //     item.name.toLowerCase().includes(search.toLowerCase()) || 
+    //     item.email.toString().toLowerCase().includes(search.toLowerCase()) ||
+    //     item.date.toString().toLowerCase().includes(search.toLowerCase())
+    // );
 
     const [view, setView] = useState("List")
 
@@ -120,19 +138,22 @@ const Reviews = () => {
 
         {view === "List" && 
         <div className='flex flex-col gap-y-4 mt-10 md:px-5 '>
-        {filteredItems.map((item,index)=>{
+        {reviews.map((item,index)=>{
             return(
                 <div className='xl:w-[80%] w-full md:h-[240px] h-fit py-5 md:py-0  flex md:flex-row flex-col gap-y-5 gap-x-5'>
                     <div className='md:w-[35%] w-full h-full'>
                        <div className='flex gap-x-2.5 items-center '>
                          <img src="/assets/account.svg" className='w-[24px] h-[24px] ' />
-                         <p className='text-[18px] font-medium font-poppins text-black '>{item.customer}</p>
+                         <p className='text-[18px] font-medium font-poppins text-black '>
+                          {/* {item.customer} */}
+                          Priya Mehta
+                          </p>
                        </div>
-                       <img src={item.img} className='w-full h-[200px] mt-4 rounded-[4px] '/>
+                       <img src={`${VITE_APP_SERVER}/${item.images[0].replace(/\\/g, '/')}`} className='w-full h-[200px] mt-4 rounded-[4px] '/>
                     </div>
 
                     <div className='md:mt-11 mt-5 md:w-[65%] w-full '>
-                        <p className='font-bangla text-[22px] text-[#101010] ' >{item.name}</p>
+                        <p className='font-bangla text-[22px] text-[#101010] ' >{item.product.productName}</p>
                         <div className='flex gap-x-1.5 items-center '>
                         {fillStars(item.stars)}
 
@@ -141,7 +162,7 @@ const Reviews = () => {
                           </div>
                         </div>
 
-                        <p className='text-[16px] font-semibold font-workSans text-[#6779A5] mt-4'>{item.review}</p>
+                        <p className='text-[16px] font-semibold font-workSans text-[#6779A5] mt-4'>{item.reviewDescription}</p>
 
                         <div className='flex md:flex-row flex-col gap-2 mt-5'>
                            <button className='text-[#25304C] border border-[#25304C] rounded-[6px] md:w-[347px] w-full h-[45px]  font-semibold text-[16px] font-workSans '>
@@ -163,7 +184,7 @@ const Reviews = () => {
 
         {view === "Grid" && 
         <div className='flex flex-row flex-wrap md:gap-12 gap-8 mt-10 px-5 '>
-        {filteredItems.map((item,index)=>{
+        {reviews.map((item,index)=>{
             return(
                 <div className='w-[181px]  h-fit py-5   flex  flex-col gap-y-5 '>
                     <div className=' w-full h-full'>
@@ -175,7 +196,7 @@ const Reviews = () => {
                     </div>
 
                     <div className=' mt-2 w-full '>
-                        <p className='font-bangla text-[14px] text-[#101010] ' >{item.name}</p>
+                        <p className='font-bangla text-[14px] text-[#101010] ' >{item.product.productName}</p>
                         <div className='flex gap-x-1.5 items-center '>
                         {fillStars(item.stars)}
 
@@ -184,7 +205,7 @@ const Reviews = () => {
                           </div>
                         </div>
 
-                        <p className='text-[12px] font-semibold font-workSans text-[#6779A5] mt-4'>{item.review}</p>
+                        <p className='text-[12px] font-semibold font-workSans text-[#6779A5] mt-4'>{item.reviewDescription}</p>
 
                         <div className='flex flex-col gap-3 mt-5'>
                            <button className='text-[#25304C] border border-[#25304C] rounded-[6px] w-full h-[30px]  font-semibold text-[12px] font-workSans '>
@@ -203,12 +224,6 @@ const Reviews = () => {
         })}
         </div>
         }
-
-
-        
-
-        
-
     </div>
 
   </div>

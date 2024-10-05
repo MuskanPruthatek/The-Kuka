@@ -240,7 +240,7 @@ const ReviewForm = () => {
     try {
       // Replace with your actual backend URL
       const response = await axios.post(
-        `${VITE_APP_SERVER}/api/product/${productName}/review`,
+        `${VITE_APP_SERVER}/api/products/${productName}/review`,
         data,
         {
           headers: {

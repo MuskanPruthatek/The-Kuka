@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Hero from '../Hero/Hero'
 import { Heart } from 'lucide-react'
 import ShareIcon from '@mui/icons-material/Share';
 import CustomiseProducts from '../CustomiseProducts/CustomiseProducts';
+import axios from "axios";
+import { useParams } from 'react-router-dom';
+const VITE_APP_SERVER = import.meta.env.VITE_APP_SERVER;
 
 const ProductDetails = () => {
     const [like, setLike] = useState(false)
+    const [product, setProduct] = useState([]);
+
+    const {id} = useParams()
     const boxes=[
         {
             img: "/assets/spiceBox.png",
@@ -23,6 +29,34 @@ const ProductDetails = () => {
             desc: "Lorem ipsum dolor sit amet, amet, consectetur adipiscing elit."
         },
     ]
+
+    useEffect(() => {
+      // Fetch data from API
+      axios
+        .get(`${VITE_APP_SERVER}/api/product/${id}`) // Replace with your API endpoint
+        .then((response) => {
+          // Assuming the response data is in response.data
+       
+          setProduct(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the products!", error);
+        });
+    }, []);
+
+    const variants = product.variants;
+    console.log(variants)
+    if (variants && variants.length > 0) {
+      // Access the first variant's details
+      const firstVariant = variants[0];
+    
+      console.log(firstVariant.finishType); // "Matt"
+      console.log(firstVariant.productPrice); // 1000
+      console.log(firstVariant.productSize); // "5 x 5"
+      console.log(firstVariant.productWoodType); // "Oak"
+      console.log(firstVariant.variantName); // "Square Box"
+    }
   return (
     <>
       <Hero/>
@@ -63,26 +97,38 @@ const ProductDetails = () => {
           <div className='xl:w-[50%] w-[95%] mt-10 xl:mt-0  '>
            
            <div className='flex justify-between w-full'>
-             <p className='xl:text-[40px] md:text-[34px] text-[30px] font-bangla font-normal text-[#25304C] '>Wooden Spice Box-Square</p>
+             <p className='xl:text-[40px] md:text-[34px] text-[30px] font-bangla font-normal text-[#25304C] '>{product.productName}</p>
              <ShareIcon />
            </div> 
 
-           <p className='font-poppins text-[18px] font-normal text-[#6779A5] '>Discover the exceptional ice bags offered by KAV Imports, crafted from FDA USDA certified resins in a BRCGS certified facility. Engineered for durability, our ice bags guarantee secure containment of heavy ice cubes and various items.</p>
+           <p className='font-poppins text-[18px] font-normal text-[#6779A5] '>{product.detailedDescription}</p>
             
-           <p className='text-[20px] font-poppins font-bold text-[#25304C] mt-5'>Size:&nbsp;&nbsp;<b className='text-[#6779A5] text-[18px] font-medium font-poppins '>24CMx24CMx7CM</b> </p>
-           <p className='text-[20px] font-poppins font-bold text-[#25304C] mt-1.5'>Wood:&nbsp;&nbsp;<b className='text-[#6779A5] text-[18px] font-medium font-poppins '>Teak Wood</b> </p>
-           <p className='text-[20px] font-poppins font-bold text-[#25304C] mt-1.5'>Finish:&nbsp;&nbsp;<b className='text-[#6779A5] text-[18px] font-medium font-poppins '>Matte Finish</b> </p>
+           <p className='text-[20px] font-poppins font-bold text-[#25304C] mt-5'>Size:&nbsp;&nbsp;<b className='text-[#6779A5] text-[18px] font-medium font-poppins '>{product.productSize}</b> </p>
+           <p className='text-[20px] font-poppins font-bold text-[#25304C] mt-1.5'>Wood:&nbsp;&nbsp;<b className='text-[#6779A5] text-[18px] font-medium font-poppins '>{product.productWoodType}</b> </p>
+           <p className='text-[20px] font-poppins font-bold text-[#25304C] mt-1.5'>Finish:&nbsp;&nbsp;<b className='text-[#6779A5] text-[18px] font-medium font-poppins '>{product.finishType}</b> </p>
           
 
            <p className='text-[#6779A5] font-semibold font-poppins text-[20px] mt-5 '>Select Variant</p>
              <div className='flex flex-row gap-x-4  w-full mt-4 gap-y-6'>
+             <div>
+      {product.variants && product.variants.length > 0 ? (
+        product.variants.map((variant, index) => (
+          <div key={index}>
+            {variant.variantName}
+          </div>
+        ))
+      ) : (
+        <div>No variants available</div>
+      )}
+    </div>
+
                 <div className='md:w-[88px] md:h-[88px] h-[66px] w-full rounded-[6px] bg-[#D9D9D9] '></div>
                 <div className='md:w-[88px] md:h-[88px] h-[66px] w-full rounded-[6px] bg-[#D9D9D9] '></div>
                 <div className='md:w-[88px] md:h-[88px] h-[66px] w-full rounded-[6px] bg-[#D9D9D9] '></div>
                 <div className='md:w-[88px] md:h-[88px] h-[66px] w-full rounded-[6px] bg-[#D9D9D9] '></div>
              </div>
 
-           <p className='xl:text-[35px] md:text-[30px] text-[24px] font-bangla font-normal text-[#25304C] tracking-wide mt-5 '>Price:&nbsp;&nbsp;<b className='xl:text-[35px]  md:text-[30px] text-[24px]  font-bangla font-normal text-[#CE916B] tracking-wide mt-5 '>1,000</b></p>  
+           <p className='xl:text-[35px] md:text-[30px] text-[24px] font-bangla font-normal text-[#25304C] tracking-wide mt-5 '>Price:&nbsp;&nbsp;<b className='xl:text-[35px]  md:text-[30px] text-[24px]  font-bangla font-normal text-[#CE916B] tracking-wide mt-5 '>{product.productPrice}</b></p>  
           </div>
 
         </div>

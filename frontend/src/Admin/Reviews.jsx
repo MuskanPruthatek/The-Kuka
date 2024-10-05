@@ -43,6 +43,13 @@ const Reviews = () => {
     //         review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis nunc a molestie dictum. Mauris venenatis, felis scelerisque aliquet lacinia, nulla"
     //     },
     // ]
+    const [deleteId, setDeleteId] = useState();
+    const [deleteOpen, setDeleteOpen] = useState(false);
+  
+    const openDeleteBox = (id) => {
+      setDeleteId(id);
+      setDeleteOpen(true);
+    };
 
     const [reviews, setReviews] = useState([])
 
@@ -58,6 +65,29 @@ const Reviews = () => {
             console.error("There was an error fetching the products!", error);
           });
       }, []);
+
+      const deleteReview = async (reviewId) => {
+        try {
+          const response = await axios.delete(
+            `${VITE_APP_SERVER}/api/products/review/${reviewId}`
+          );
+          if (response.status === 204 || response.status === 200) {
+            alert("Review Deleted Successfully");
+            setReviews((prevReviews) => prevReviews.filter((review) => review.id !== reviewId));
+            setDeleteOpen(false);
+          } else {
+            alert("Failed to delete review");
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            alert("Review not found");
+          } else {
+            alert("An error occurred while deleting the review");
+          }
+          console.error("Error deleting review:", error);
+        }
+      };
+
 
 
     const [search, setSearch] = useState("");
@@ -88,8 +118,31 @@ const Reviews = () => {
                 }
                 return filledStars;
               };
+
+  
   return (
-    <div className='w-full bg-white rounded-[9px] mt-2 p-3.5 '>
+    <div className='w-full bg-white rounded-[9px] mt-2 p-3.5 relative '>
+                {deleteOpen && (
+            <div className="fixed z-40 top-0 left-0 right-0 bottom-0  flex justify-center">
+              <div className="md:w-[450px] w-[300px] h-[276px] bg-white rounded-[20px] shadow-xl mt-10 flex flex-col justify-center items-center">
+                <p className="md:text-[18px] text-[14px] font-medium text-[#25304C] ">
+                  Are you sure you want to Delete the Review?
+                </p>
+                <div
+                  onClick={() => deleteReview(deleteId)}
+                  className="w-[200px] h-[40px] border border-[#25304C] rounded-[20px] text-[#25304C] mt-[46px] text-[16px] font-medium flex justify-center items-center "
+                >
+                  Delete
+                </div>
+                <div
+                  onClick={() => setDeleteOpen(false)}
+                  className="w-[200px] cursor-pointer h-[40px] bg-[#25304C] rounded-[20px] text-white flex justify-center items-center mt-[10px] text-[16px] font-medium "
+                >
+                  Cancel
+                </div>
+              </div>
+            </div>
+          )}
          <Link to="/admin" className='flex xl:hidden items-center gap-x-1 my-2 mb-4'>
           <ChevronLeft color="#25304c" />
           <p className='text-[#25304C] text-[16px] font-medium font-workSans '>Back</p>
@@ -169,7 +222,7 @@ const Reviews = () => {
                            Display on Product Page
                            </button>
 
-                           <button className='md:w-[140px] w-full h-[45px] rounded-[6px] border border-[#FF4242] text-[#FF4242] font-semibold text-[16px] font-workSans '>
+                           <button onClick={()=>openDeleteBox(item._id)} className='md:w-[140px] w-full h-[45px] rounded-[6px] border border-[#FF4242] text-[#FF4242] font-semibold text-[16px] font-workSans '>
                              Remove
                            </button>
 

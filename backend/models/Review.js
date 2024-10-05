@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose= require('mongoose');
 
-// review schema
 const reviewSchema = new mongoose.Schema({
   product: {
     type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +18,11 @@ const reviewSchema = new mongoose.Schema({
   },
   images: [{
     type: String
-  }]
+  }],
+  displayOnProductPage: {
+    type: Boolean,
+    default: false  // By default, the review won't be displayed until the admin approves it
+  }
 }, 
 { timestamps: true });
 

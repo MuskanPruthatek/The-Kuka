@@ -130,6 +130,48 @@ router.get('/:productName/reviews', async (req, res) => {
   }
 });
 
+// DELETE route to remove a review by its ID
+router.delete('/review/:reviewId', async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+
+    const review = await Review.findById(reviewId);
+
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    await Review.findByIdAndDelete(reviewId);
+
+    res.status(200).json({ message: 'Review deleted successfully' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+
+// PATCH route to update the displayOnProductPage field for a review
+router.patch('/review/:reviewId/display', async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const { displayOnProductPage } = req.body; // Boolean to set the display status
+
+    const review = await Review.findById(reviewId);
+
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    review.displayOnProductPage = displayOnProductPage; // Update the display field
+
+    await review.save();
+
+    res.status(200).json({ message: 'Review display status updated', review });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
 
 
 module.exports = router;

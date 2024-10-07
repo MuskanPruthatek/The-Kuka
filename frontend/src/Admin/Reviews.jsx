@@ -45,6 +45,7 @@ const Reviews = () => {
     // ]
     const [deleteId, setDeleteId] = useState();
     const [deleteOpen, setDeleteOpen] = useState(false);
+    const [displayOnProductPage, setDisplayOnProductPage] = useState(false);
   
     const openDeleteBox = (id) => {
       setDeleteId(id);
@@ -88,6 +89,18 @@ const Reviews = () => {
         }
       };
 
+      const handleDisplayToggle = async (reviewId) => {
+        try {
+          const response = await axios.patch(`${VITE_APP_SERVER}/api/products/review/${reviewId}/display`, {
+            displayOnProductPage: !displayOnProductPage,
+          });
+          setDisplayOnProductPage(response.data.review.displayOnProductPage);
+          alert('Review display status updated');
+        } catch (error) {
+          console.error('Error updating display status:', error);
+          alert('Failed to update review display status');
+        }
+      };
 
 
     const [search, setSearch] = useState("");
@@ -122,7 +135,7 @@ const Reviews = () => {
   
   return (
     <div className='w-full bg-white rounded-[9px] mt-2 p-3.5 relative '>
-                {deleteOpen && (
+         {deleteOpen && (
             <div className="fixed z-40 top-0 left-0 right-0 bottom-0  flex justify-center">
               <div className="md:w-[450px] w-[300px] h-[276px] bg-white rounded-[20px] shadow-xl mt-10 flex flex-col justify-center items-center">
                 <p className="md:text-[18px] text-[14px] font-medium text-[#25304C] ">
@@ -218,8 +231,8 @@ const Reviews = () => {
                         <p className='text-[16px] font-semibold font-workSans text-[#6779A5] mt-4'>{item.reviewDescription}</p>
 
                         <div className='flex md:flex-row flex-col gap-2 mt-5'>
-                           <button className='text-[#25304C] border border-[#25304C] rounded-[6px] md:w-[347px] w-full h-[45px]  font-semibold text-[16px] font-workSans '>
-                           Display on Product Page
+                           <button onClick={()=>handleDisplayToggle(item._id)} className='text-[#25304C] border border-[#25304C] rounded-[6px] md:w-[347px] w-full h-[45px]  font-semibold text-[16px] font-workSans '>
+                           {item.displayOnProductPage ? 'Added on Product Page' : 'Display on Product Page'}
                            </button>
 
                            <button onClick={()=>openDeleteBox(item._id)} className='md:w-[140px] w-full h-[45px] rounded-[6px] border border-[#FF4242] text-[#FF4242] font-semibold text-[16px] font-workSans '>

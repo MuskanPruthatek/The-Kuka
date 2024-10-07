@@ -10,8 +10,9 @@ const AllProduct = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [open, setOpen] = useState(false);
+  const [displayOnHomePage, setDisplayOnHomePage] = useState(false);
   
-
+  const [displayStatus, setDisplayStatus] = useState({});
   useEffect(() => {
     // Fetch data from API
     axios
@@ -46,8 +47,8 @@ const AllProduct = () => {
 
   const handleCheckboxChange = (index) => {
     const updatedProducts = [...products];
-    updatedProducts[index].display_on_home =
-      !updatedProducts[index].display_on_home;
+    updatedProducts[index].displayOnHomePage =
+      !updatedProducts[index].displayOnHomePage;
     setProducts(updatedProducts);
   };
 
@@ -118,6 +119,40 @@ const handleSubmitDiscount = async (e) => {
         alert("An error occurred while deleting the product");
       }
       console.error("Error deleting product:", error);
+    }
+  };
+
+  // const handleDisplayToggle = async (productId) => {
+  //   try {
+  //     const response = await axios.patch(`${VITE_APP_SERVER}/api/products/${productId}/display`, {
+  //       displayOnProductPage: !displayOnProductPage,
+  //     });
+  //     setDisplayOnProductPage(response.data.product.displayOnProductPage);
+  //     alert('Product display status updated');
+  //   } catch (error) {
+  //     console.error('Error updating display status:', error);
+  //     alert('Failed to update product display status');
+  //   }
+  // };
+
+
+  const handleDisplayToggle = async (event, productId) => {
+    const isChecked = event.target.checked;
+
+    // Optimistically update the state for the current product
+    setDisplayStatus(prevState => ({
+      ...prevState,
+      [productId]: isChecked,
+    }));
+
+    try {
+      await axios.patch(`${VITE_APP_SERVER}/api/product/${productId}/display`, {
+        displayOnHomePage: isChecked,
+      });
+      alert('Product display status updated');
+    } catch (error) {
+      console.error('Error updating display status:', error);
+      alert('Failed to update product display status');
     }
   };
 
@@ -273,10 +308,10 @@ const handleSubmitDiscount = async (e) => {
                   <div className="flex items-center gap-x-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={product.display_on_home}
-                      onChange={() => handleCheckboxChange(index)}
-                      className="accent-[#25304C]"
-                      id={product.productName}
+                      id={productId}
+                      checked={product.displayOnHomePage || false}
+                      onChange={(event)=>handleDisplayToggle(event, product._id)} 
+                      className="accent-[#25304C]"                     
                     />
                     <label
                       htmlFor={product.productName}

@@ -155,6 +155,7 @@ const handleSubmitDiscount = async (e) => {
       alert('Failed to update product display status');
     }
   };
+  // const imageUrl = "http://localhost:5173/uploads/1728293462085-whispering.jpg";
 
   return (
     <div className="relative ">
@@ -286,7 +287,7 @@ const handleSubmitDiscount = async (e) => {
             <div className="w-52 h-52 rounded-md">
               <img
                 className="w-full h-full object-cover rounded-md"
-                src={`${VITE_APP_SERVER}/${product.images[0]}`}
+                src={`${VITE_APP_SERVER}${product.images[0]}`}
                 alt={product.productName}
               />
             </div>

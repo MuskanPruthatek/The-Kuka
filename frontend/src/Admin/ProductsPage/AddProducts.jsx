@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import axios from "axios";
 
@@ -172,33 +172,22 @@ const AddProducts = () => {
 
   const [variants, setVariants] = useState([])
 
-  // const showVariant = async () =>{
-  //   axios
-  //     .get(`${VITE_APP_SERVER}/api/product/${productName}/variants`) // Replace with your API endpoint
-  //     .then((response) => {
-  //       // Assuming the response data is in response.data
-  //       setVariants(response.data.variants);
-  //       console.log(response.data.variants);
-  //       setOpenShowVariant(true)
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error fetching the variants!", error);
-  //     });
-  // }
-
   const [loading, setLoading] = useState(false); // To show a loading state
-const [error, setError] = useState(null); // To handle errors
+  const [error, setError] = useState(null); // To handle errors
+
+  useEffect(() => {
+    console.log("Updated Variants: ", JSON.stringify(variants, null, 2));
+  }, [variants]);
 
   const showVariant = async () => {
     setLoading(true); // Start loading
     setError(null); // Reset error before fetching
-    axios
-      .get(`${VITE_APP_SERVER}/api/product/${productName}/variants`) // Ensure `productName` is the correct identifier
+    axios.get(`${VITE_APP_SERVER}/api/product/${productName}/variants`) // Ensure productName is the correct identifier
       .then((response) => {
-        if (response.data && Array.isArray(response.data.mainProduct)) {
-          setVariants(response.data.mainProduct);
-          console.log(response.data.mainProduct);
-          setOpenShowVariant(true); // Open the modal
+        if (response.data && response.data.variants) {
+          setVariants(response.data.mainProduct.variants); // Set the variants array
+          console.log("Variants received:", response.data.mainProduct.variants);
+          setOpenShowVariant(true)
         } else {
           console.error("Unexpected response format:", response.data);
           setError("Failed to load variants.");
@@ -213,6 +202,7 @@ const [error, setError] = useState(null); // To handle errors
       });
   };
 
+  
   return (
     <div className="relative w-full bg-white font-workSans">
       <form
@@ -305,22 +295,31 @@ const [error, setError] = useState(null); // To handle errors
           </div>
         )}
 
-        {openShowVariant && (
+         {openShowVariant && ( 
           <div className="absolute flex justify-center items-center w-full h-full z-50">
-          <div className="md:w-[590px]  w-[90%] h-fit drop-shadow-2xl rounded-[10px] bg-white ">
-             <p>Variants of {productName}</p>
+          <div className="md:w-[590px]  w-[90%] h-fit drop-shadow-2xl rounded-[10px] bg-white p-5 ">
+            <div className="flex justify-between ">
+            <p className="text-[24px] font-semibold text-[#25304C]">Variants of {productName}</p>
 
+            <X onClick={()=>setOpenShowVariant(false)} className="cursor-pointer "/>
+            </div>
+            
+            <div className="flex flex-row flex-wrap gap-8 ">
              {variants.map((variant, index)=>{
-              return (
-                <div>
-                  <img src={variant.images[0]} className="w-[200px] h-[200px] "/>
-                  <p>{variant.variantName}</p>
+               return (
+                <div className="mt-5 ">
+                  <div className="w-[150px] h-[150px] bg-[#25304C]/50 ">
+                    <p>{variant.variantName}</p>
+                  </div>
+                  <p className="text-[14px] font-semibold text-[#25304C] ">{variant.variantName}</p>
+              
                 </div>
-              )
-             })}
+              ) 
+              })} 
+           </div>
           </div>
           </div>
-        )}
+        )} 
 
         {/* Product Form */}
         <div className="flex w-full md:flex-row gap-4 flex-col items-center md:items-start">
@@ -483,11 +482,11 @@ const [error, setError] = useState(null); // To handle errors
         <div className='flex w-full md:flex-row gap-4 flex-col items-center'>
 
                 <div onClick={()=>setOpenVariant(true)} className='w-[90%] cursor-pointer md:w-[216px] h-[45px] flex justify-center items-center rounded-[10px] bg-[#25304C] md:mt-7 md:ml-2 text-white text-[16px] font-semibold '>Create Variant</div>
-                <div onClick={()=>showVariant()} className='w-[90%] md:w-[216px] h-[45px] flex justify-center items-center rounded-[10px] bg-[#25304C] md:mt-7 md:-ml-1.5 text-white text-[16px] font-semibold '>Show Variant</div>
+                <div onClick={()=>showVariant()} className='w-[90%] md:w-[216px] h-[45px] cursor-pointer flex justify-center items-center rounded-[10px] bg-[#25304C] md:mt-7 md:-ml-1.5 text-white text-[16px] font-semibold '>Show Variant</div>
                 {loading && <p>Loading variants...</p>}
                 {error && <p className="text-red-500">{error}</p>}
             
-            </div>
+       </div>
 
     <div className="w-full flex md:gap-x-5 gap-x-2 justify-end ">
     <button

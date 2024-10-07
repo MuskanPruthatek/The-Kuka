@@ -17,6 +17,7 @@ import Customers from "./Admin/Customers";
 import Reviews from "./Admin/Reviews";
 import EditProduct from "./Admin/ProductsPage/EditProduct";
 import CouponCode from "./Admin/CouponCode";
+import PaymentGateway from "./components/PaymentGateway/PaymentGateway";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/products/productDetails/:id" element={<ProductDetails />} />
             <Route path="/aboutus" element={<AboutUs />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/payment" element={<PaymentGateway />} />
           </Route>
           <Route path="/admin" element={<AdminOutlet />}>
             <Route path="/admin" element={<MainPage />} />

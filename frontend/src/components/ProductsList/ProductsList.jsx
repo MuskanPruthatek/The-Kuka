@@ -28,13 +28,13 @@ const ProductsList = ({products, filterState}) => {
         {/* Wooden boxes end*/}
 
         {/* Wooden Mugs */}
-        {products.filter(product => product.productCatgory === "Mugs") &&  <section className='woodenMugs w-full mb-10 lg:mb-16'>
+        {products.filter(product => product.productCatgory === "Wooden Mugs") &&  <section className='woodenMugs w-full mb-10 lg:mb-16'>
         <div className='flex flex-col justify-center items-center '>
           <h1 className='text-[30px] font-normal font-bangla text-[#25304C] '>Wooden Mugs</h1>
           <img src="/assets/design.svg" />
         </div>
         <div className='w-full mt-12 flex flex-wrap xl:justify-start justify-center items-center lg:flex-row flex-col gap-y-8 gap-x-6 '>
-        {products.filter(product => product.productCategory === 'Mugs').map((product, index) => (
+        {products.filter(product => product.productCategory === 'Wooden Mugs').map((product, index) => (
      
      <Link to={`productDetails/${product._id}`} className='card lg:w-[30%] md:w-[50%] w-[90%] h-[310px] rounded-[4px]'>
       <div key={index} className='w-full h-full '>
@@ -56,11 +56,13 @@ const ProductsList = ({products, filterState}) => {
         </div>
         <div className='w-full mt-12 flex flex-wrap xl:justify-start justify-center items-center lg:flex-row flex-col gap-y-8 gap-x-6 '>
         {products.filter(product => product.productCategory === 'Wooden Trays').map((product, index) => (
-      <div key={index} className='card lg:w-[30%] md:w-[50%] w-[90%] h-[310px] rounded-[4px]'>
-        <img src={product.img} alt={product.productName} className='w-full h-[65%] object-cover rounded-[4px]' />
-        <p className='lg:text-[22px] text-[20px] font-normal font-bangla text-[rgba(16,16,16,1)] mt-5'>{product.productName}</p>
-        <p className='text-[15px] font-poppins font-normal text-[rgba(103,121,165,1)]'>{product.smallDescription}</p>
-      </div>
+     <Link to={`productDetails/${product._id}`} className='card lg:w-[30%] md:w-[50%] w-[90%] h-[310px] rounded-[4px]'>
+     <div key={index} className='w-full h-full '>
+       <img src={product.img} alt={product.productName} className='w-full h-[65%] object-cover rounded-[4px]' />
+       <p className='lg:text-[22px] text-[20px] font-normal font-bangla text-[rgba(16,16,16,1)] mt-5'>{product.productName}</p>
+       <p className='text-[15px] font-poppins font-normal text-[rgba(103,121,165,1)]'>{product.smallDescription}</p>
+     </div>
+     </Link>
     ))}
         </div>       
         </section>}    
